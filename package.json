@@ -1,0 +1,19 @@
+{
+  "name": "buy-and-sell",
+  "version": "1.0.0",
+  "description": "Куплю. Продам",
+  "main": "./src/service/service.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/htmlacademy-nodejs/1342083-buy-and-sell-3.git"
+  },
+  "author": "Nick Petrenko <extendsnull@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/htmlacademy-nodejs/1342083-buy-and-sell-3/issues"
+  },
+  "homepage": "https://github.com/htmlacademy-nodejs/1342083-buy-and-sell-3#readme"
+}
