@@ -4,7 +4,8 @@
   "description": "Куплю. Продам",
   "main": "./src/service/service.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "npm run eslint",
+    "eslint": "eslint --ext .js src/"
   },
   "repository": {
     "type": "git",
@@ -15,5 +16,9 @@
   "bugs": {
     "url": "https://github.com/htmlacademy-nodejs/1342083-buy-and-sell-3/issues"
   },
-  "homepage": "https://github.com/htmlacademy-nodejs/1342083-buy-and-sell-3#readme"
+  "homepage": "https://github.com/htmlacademy-nodejs/1342083-buy-and-sell-3#readme",
+  "devDependencies": {
+    "eslint": "7.23.0",
+    "eslint-config-htmlacademy": "0.6.0"
+  }
 }
