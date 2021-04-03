@@ -3,110 +3,79 @@
 const fs = require(`fs`);
 const chalk = require(`chalk`);
 const {ExitCode} = require(`../../constants`);
+
 const {
   getRandomInt,
   getRandomArrayItem,
   getRandomArrayItems,
 } = require(`../../utils`);
 
-const DEFAULT_COUNT = 1;
-const FILE_NAME = `mocks.json`;
+const {
+  DEFAULT_COUNT,
+  FILE_NAME,
+  TITLES,
+  SENTECES,
+  CATEGORIES,
+} = require(`./constants`);
 
-const TITLES = [
-  `Продам книги Стивена Кинга.`,
-  `Продам новую приставку Sony Playstation 5.`,
-  `Продам отличную подборку фильмов на VHS.`,
-  `Куплю антиквариат.`,
-  `Куплю породистого кота.`,
-  `Продам коллекцию журналов «Огонёк».`,
-  `Отдам в хорошие руки подшивку «Мурзилка».`,
-  `Продам советскую посуду. Почти не разбита.`,
-  `Куплю детские санки.`,
-];
+const {
+  DescriptionRestrict,
+  PictureIndexRestrict,
+  OfferType,
+  SumRestrict,
+} = require(`./enums`);
 
-const SENTECES = [
-  `Товар в отличном состоянии.`,
-  `Пользовались бережно и только по большим праздникам.`,
-  `Продаю с болью в сердце...`,
-  `Бонусом отдам все аксессуары.`,
-  `Даю недельную гарантию.`,
-  `Если товар не понравится — верну всё до последней копейки.`,
-  `Это настоящая находка для коллекционера!`,
-  `Если найдёте дешевле — сброшу цену.`,
-  `Таких предложений больше нет!`,
-  `Две страницы заляпаны свежим кофе.`,
-  `При покупке с меня бесплатная доставка в черте города.`,
-  `Кажется, что это хрупкая вещь.`,
-  `Мой дед не мог её сломать.`,
-  `Кому нужен этот новый телефон, если тут такое...`,
-  `Не пытайтесь торговаться. Цену вещам я знаю.`,
-];
+class OfferGenerator {
+  static getRandomTitle() {
+    return getRandomArrayItem(TITLES);
+  }
 
-const CATEGORIES = [
-  `Книги`,
-  `Разное`,
-  `Посуда`,
-  `Игры`,
-  `Животные`,
-  `Журналы`,
-];
+  static getRandomPicture() {
+    const index = getRandomInt(PictureIndexRestrict.MIN, PictureIndexRestrict.MAX)
+      .toString()
+      .padStart(2, `0`);
 
-const DescriptionRestrict = {
-  MIN: 1,
-  MAX: 5,
-};
+    return `item${index}.jpg`;
+  }
 
-const PictureIndexRestrict = {
-  MIN: 1,
-  MAX: 16,
-};
+  static getRandomDescription() {
+    return getRandomArrayItems(SENTECES, DescriptionRestrict.MAX).join(` `);
+  }
 
-const OfferType = {
-  OFFER: `offer`,
-  SALE: `sale`,
-};
+  static getType() {
+    return getRandomArrayItem(Object.values(OfferType));
+  }
 
-const SumRestrict = {
-  MIN: 1000,
-  MAX: 100000,
-};
+  static getRandomSum() {
+    return getRandomInt(SumRestrict.MIN, SumRestrict.MAX);
+  }
 
-const getRandomTitle = () => getRandomArrayItem(TITLES);
+  static getCategories() {
+    return getRandomArrayItems(CATEGORIES);
+  }
 
-const getRandomPicture = () => {
-  const index = getRandomInt(PictureIndexRestrict.MIN, PictureIndexRestrict.MAX)
-    .toString()
-    .padStart(2, `0`);
+  static generateOffer(count) {
+    const offer = Array(count).fill(``).map(() => {
+      return {
+        title: this.getRandomTitle(),
+        picture: this.getRandomPicture(),
+        description: this.getRandomDescription(),
+        type: this.getType(),
+        sum: this.getRandomSum(),
+        category: this.getCategories(),
+      };
+    });
 
-  return `item${index}.jpg`;
-};
-
-const getRandomDescription = () => getRandomArrayItems(SENTECES, DescriptionRestrict.MAX).join(` `);
-const getType = () => getRandomArrayItem(Object.values(OfferType));
-const getRandomSum = () => getRandomInt(SumRestrict.MIN, SumRestrict.MAX);
-const getCategories = () => getRandomArrayItems(CATEGORIES);
-
-const generateOffers = (count) => {
-  const offer = Array(count).fill(``).map(() => {
-    return {
-      title: getRandomTitle(),
-      picture: getRandomPicture(),
-      description: getRandomDescription(),
-      type: getType(),
-      sum: getRandomSum(),
-      category: getCategories(),
-    };
-  });
-
-  return offer;
-};
+    return offer;
+  }
+}
 
 module.exports = {
   name: `--generate`,
   run(args) {
     const [count] = args;
     const countOffer = Number.parseInt(count, 10) || DEFAULT_COUNT;
-    const content = JSON.stringify(generateOffers(countOffer), null, 2);
+    const content = JSON.stringify(OfferGenerator.generateOffer(countOffer), null, 2);
 
     fs.writeFile(FILE_NAME, content, (err) => {
       if (err) {
