@@ -1,6 +1,7 @@
 'use strict';
 
 const fs = require(`fs`);
+const chalk = require(`chalk`);
 const {
   getRandomInt,
   getRandomArrayItem,
@@ -108,10 +109,10 @@ module.exports = {
 
     fs.writeFile(FILE_NAME, content, (err) => {
       if (err) {
-        console.error(`Не могу записать данные в файл...`);
+        console.error(chalk.red(`Не могу записать данные в файл...`));
       }
 
-      console.info(`Операция успешна. Файл создан.`);
+      console.info(chalk.green(`Операция успешна. Файл создан.`));
     });
   },
 };
