@@ -2,6 +2,7 @@
 
 const fs = require(`fs`);
 const chalk = require(`chalk`);
+const {ExitCode} = require(`../../constants`);
 const {
   getRandomInt,
   getRandomArrayItem,
@@ -110,9 +111,11 @@ module.exports = {
     fs.writeFile(FILE_NAME, content, (err) => {
       if (err) {
         console.error(chalk.red(`Не могу записать данные в файл...`));
+        process.exit(ExitCode.error);
       }
 
       console.info(chalk.green(`Операция успешна. Файл создан.`));
+      process.exit(ExitCode.success);
     });
   },
 };
