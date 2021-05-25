@@ -3,31 +3,23 @@
 const fs = require(`fs`);
 const chalk = require(`chalk`);
 const {ExitCode} = require(`../../constants`);
-
 const {
   getRandomInt,
   getRandomArrayItem,
   getRandomArrayItems,
 } = require(`../../utils`);
-
 const {
-  DEFAULT_COUNT,
-  FILE_NAME,
-  TITLES,
-  SENTECES,
-  CATEGORIES,
-} = require(`./constants`);
-
-const {
+  CliCommand,
+  MocksConfig,
   DescriptionRestrict,
   PictureIndexRestrict,
   OfferType,
   SumRestrict,
-} = require(`./enums`);
+} = require(`./constants`);
 
 class OfferGenerator {
   static getRandomTitle() {
-    return getRandomArrayItem(TITLES);
+    return getRandomArrayItem(MocksConfig.TITLES);
   }
 
   static getRandomPicture() {
@@ -39,7 +31,7 @@ class OfferGenerator {
   }
 
   static getRandomDescription() {
-    return getRandomArrayItems(SENTECES, DescriptionRestrict.MAX).join(` `);
+    return getRandomArrayItems(MocksConfig.SENTECES, DescriptionRestrict.MAX).join(` `);
   }
 
   static getType() {
@@ -51,11 +43,11 @@ class OfferGenerator {
   }
 
   static getCategories() {
-    return getRandomArrayItems(CATEGORIES);
+    return getRandomArrayItems(MocksConfig.CATEGORIES);
   }
 
   static generateOffer(count) {
-    const offer = Array(count).fill(``).map(() => {
+    return Array.from(new Array(count), () => {
       return {
         title: this.getRandomTitle(),
         picture: this.getRandomPicture(),
@@ -65,26 +57,24 @@ class OfferGenerator {
         category: this.getCategories(),
       };
     });
-
-    return offer;
   }
 }
 
 module.exports = {
-  name: `--generate`,
+  name: CliCommand.GENERATE,
   run(args) {
     const [count] = args;
-    const countOffer = Number.parseInt(count, 10) || DEFAULT_COUNT;
+    const countOffer = Number.parseInt(count, 10) || MocksConfig.DEFAULT_COUNT;
     const content = JSON.stringify(OfferGenerator.generateOffer(countOffer), null, 2);
 
-    fs.writeFile(FILE_NAME, content, (err) => {
+    fs.writeFile(MocksConfig.FILE_NAME, content, (err) => {
       if (err) {
         console.error(chalk.red(`Не могу записать данные в файл...`));
-        process.exit(ExitCode.error);
+        process.exit(ExitCode.ERROR);
       }
 
       console.info(chalk.green(`Операция успешна. Файл создан.`));
-      process.exit(ExitCode.success);
+      process.exit(ExitCode.SUCCESS);
     });
   },
 };
