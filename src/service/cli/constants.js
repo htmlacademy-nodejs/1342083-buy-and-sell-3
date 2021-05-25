@@ -47,16 +47,18 @@ const MocksConfig = {
     `Животные`,
     `Журналы`,
   ],
-};
-
-const DescriptionRestrict = {
-  MIN: 1,
-  MAX: 5,
-};
-
-const PictureIndexRestrict = {
-  MIN: 1,
-  MAX: 16,
+  DESCRIPTION_RESTRICT: {
+    MIN: 1,
+    MAX: 5,
+  },
+  PICTURE_INDEX_RESTRICT: {
+    MIN: 1,
+    MAX: 16,
+  },
+  SUM_RESTRICT: {
+    MIN: 1000,
+    MAX: 100000,
+  },
 };
 
 const OfferType = {
@@ -64,17 +66,9 @@ const OfferType = {
   SALE: `sale`,
 };
 
-const SumRestrict = {
-  MIN: 1000,
-  MAX: 100000,
-};
-
 module.exports = {
   CliCommand,
   DEFAULT_COMMAND,
   MocksConfig,
-  DescriptionRestrict,
-  PictureIndexRestrict,
   OfferType,
-  SumRestrict,
 };

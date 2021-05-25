@@ -11,10 +11,7 @@ const {
 const {
   CliCommand,
   MocksConfig,
-  DescriptionRestrict,
-  PictureIndexRestrict,
   OfferType,
-  SumRestrict,
 } = require(`./constants`);
 
 class OfferGenerator {
@@ -23,7 +20,7 @@ class OfferGenerator {
   }
 
   static getRandomPicture() {
-    const index = getRandomInt(PictureIndexRestrict.MIN, PictureIndexRestrict.MAX)
+    const index = getRandomInt(MocksConfig.PICTURE_INDEX_RESTRICT.MIN, MocksConfig.PICTURE_INDEX_RESTRICT.MAX)
       .toString()
       .padStart(2, `0`);
 
@@ -31,7 +28,7 @@ class OfferGenerator {
   }
 
   static getRandomDescription() {
-    return getRandomArrayItems(MocksConfig.SENTECES, DescriptionRestrict.MAX).join(` `);
+    return getRandomArrayItems(MocksConfig.SENTECES, MocksConfig.DESCRIPTION_RESTRICT.MAX).join(` `);
   }
 
   static getType() {
@@ -39,7 +36,7 @@ class OfferGenerator {
   }
 
   static getRandomSum() {
-    return getRandomInt(SumRestrict.MIN, SumRestrict.MAX);
+    return getRandomInt(MocksConfig.SUM_RESTRICT.MIN, MocksConfig.SUM_RESTRICT.MAX);
   }
 
   static getCategories() {
