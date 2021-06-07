@@ -1,6 +1,6 @@
 'use strict';
 
-const fs = require(`fs`);
+const fs = require(`fs`).promises;
 const chalk = require(`chalk`);
 const {ExitCode} = require(`../../constants`);
 const {
@@ -14,13 +14,24 @@ const {
   OfferType,
 } = require(`./constants`);
 
+const {
+  CATEGORIES,
+  DEFAULT_COUNT,
+  DESCRIPTION_RESTRICT,
+  FILE_NAME,
+  TITLES,
+  PICTURE_INDEX_RESTRICT,
+  SENTECES,
+  SUM_RESTRICT,
+} = MocksConfig;
+
 class OfferGenerator {
   static getRandomTitle() {
-    return getRandomArrayItem(MocksConfig.TITLES);
+    return getRandomArrayItem(TITLES);
   }
 
   static getRandomPicture() {
-    const index = getRandomInt(MocksConfig.PICTURE_INDEX_RESTRICT.MIN, MocksConfig.PICTURE_INDEX_RESTRICT.MAX)
+    const index = getRandomInt(PICTURE_INDEX_RESTRICT.MIN, PICTURE_INDEX_RESTRICT.MAX)
       .toString()
       .padStart(2, `0`);
 
@@ -28,7 +39,7 @@ class OfferGenerator {
   }
 
   static getRandomDescription() {
-    return getRandomArrayItems(MocksConfig.SENTECES, MocksConfig.DESCRIPTION_RESTRICT.MAX).join(` `);
+    return getRandomArrayItems(SENTECES, DESCRIPTION_RESTRICT.MAX).join(` `);
   }
 
   static getType() {
@@ -36,11 +47,11 @@ class OfferGenerator {
   }
 
   static getRandomSum() {
-    return getRandomInt(MocksConfig.SUM_RESTRICT.MIN, MocksConfig.SUM_RESTRICT.MAX);
+    return getRandomInt(SUM_RESTRICT.MIN, SUM_RESTRICT.MAX);
   }
 
   static getCategories() {
-    return getRandomArrayItems(MocksConfig.CATEGORIES);
+    return getRandomArrayItems(CATEGORIES);
   }
 
   static generateOffer(count) {
@@ -59,19 +70,18 @@ class OfferGenerator {
 
 module.exports = {
   name: CliCommand.GENERATE,
-  run(args) {
+  async run(args) {
     const [count] = args;
-    const countOffer = Number.parseInt(count, 10) || MocksConfig.DEFAULT_COUNT;
+    const countOffer = Number.parseInt(count, 10) || DEFAULT_COUNT;
     const content = JSON.stringify(OfferGenerator.generateOffer(countOffer), null, 2);
 
-    fs.writeFile(MocksConfig.FILE_NAME, content, (err) => {
-      if (err) {
-        console.error(chalk.red(`Не могу записать данные в файл...`));
-        process.exit(ExitCode.ERROR);
-      }
-
+    try {
+      await fs.writeFile(FILE_NAME, content);
       console.info(chalk.green(`Операция успешна. Файл создан.`));
       process.exit(ExitCode.SUCCESS);
-    });
+    } catch (err) {
+      console.error(chalk.red(`Не могу записать данные в файл...`));
+      process.exit(ExitCode.ERROR);
+    }
   },
 };
