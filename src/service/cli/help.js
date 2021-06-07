@@ -18,6 +18,6 @@ ${CliCommand.HELP}:               печатает этот текст
 ${CliCommand.GENERATE}: <count>   формирует файл mocks.json
 `;
 
-    console.info(chalk.yellow(text));
+    console.info(chalk.gray(text));
   },
 };
