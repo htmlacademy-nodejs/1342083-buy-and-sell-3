@@ -1,29 +1,29 @@
 'use strict';
 
-const fs = require(`fs`);
+const fs = require(`fs`).promises;
 const chalk = require(`chalk`);
 const {ExitCode} = require(`../../constants`);
-
 const {
   getRandomInt,
   getRandomArrayItem,
   getRandomArrayItems,
 } = require(`../../utils`);
-
 const {
-  DEFAULT_COUNT,
-  FILE_NAME,
-  TITLES,
-  SENTECES,
-  CATEGORIES,
+  CliCommand,
+  MocksConfig,
+  OfferType,
 } = require(`./constants`);
 
 const {
-  DescriptionRestrict,
-  PictureIndexRestrict,
-  OfferType,
-  SumRestrict,
-} = require(`./enums`);
+  CATEGORIES,
+  DEFAULT_COUNT,
+  DESCRIPTION_RESTRICT,
+  FILE_NAME,
+  TITLES,
+  PICTURE_INDEX_RESTRICT,
+  SENTECES,
+  SUM_RESTRICT,
+} = MocksConfig;
 
 class OfferGenerator {
   static getRandomTitle() {
@@ -31,7 +31,7 @@ class OfferGenerator {
   }
 
   static getRandomPicture() {
-    const index = getRandomInt(PictureIndexRestrict.MIN, PictureIndexRestrict.MAX)
+    const index = getRandomInt(PICTURE_INDEX_RESTRICT.MIN, PICTURE_INDEX_RESTRICT.MAX)
       .toString()
       .padStart(2, `0`);
 
@@ -39,7 +39,7 @@ class OfferGenerator {
   }
 
   static getRandomDescription() {
-    return getRandomArrayItems(SENTECES, DescriptionRestrict.MAX).join(` `);
+    return getRandomArrayItems(SENTECES, DESCRIPTION_RESTRICT.MAX).join(` `);
   }
 
   static getType() {
@@ -47,7 +47,7 @@ class OfferGenerator {
   }
 
   static getRandomSum() {
-    return getRandomInt(SumRestrict.MIN, SumRestrict.MAX);
+    return getRandomInt(SUM_RESTRICT.MIN, SUM_RESTRICT.MAX);
   }
 
   static getCategories() {
@@ -55,7 +55,7 @@ class OfferGenerator {
   }
 
   static generateOffer(count) {
-    const offer = Array(count).fill(``).map(() => {
+    return Array.from(new Array(count), () => {
       return {
         title: this.getRandomTitle(),
         picture: this.getRandomPicture(),
@@ -65,26 +65,23 @@ class OfferGenerator {
         category: this.getCategories(),
       };
     });
-
-    return offer;
   }
 }
 
 module.exports = {
-  name: `--generate`,
-  run(args) {
+  name: CliCommand.GENERATE,
+  async run(args) {
     const [count] = args;
     const countOffer = Number.parseInt(count, 10) || DEFAULT_COUNT;
     const content = JSON.stringify(OfferGenerator.generateOffer(countOffer), null, 2);
 
-    fs.writeFile(FILE_NAME, content, (err) => {
-      if (err) {
-        console.error(chalk.red(`Не могу записать данные в файл...`));
-        process.exit(ExitCode.error);
-      }
-
+    try {
+      await fs.writeFile(FILE_NAME, content);
       console.info(chalk.green(`Операция успешна. Файл создан.`));
-      process.exit(ExitCode.success);
-    });
+      process.exit(ExitCode.SUCCESS);
+    } catch (err) {
+      console.error(chalk.red(`Не могу записать данные в файл...`));
+      process.exit(ExitCode.ERROR);
+    }
   },
 };
