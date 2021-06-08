@@ -8,7 +8,7 @@ const CliCommand = {
 
 const DEFAULT_COMMAND = CliCommand.HELP;
 
-const FilePaths = {
+const FilePath = {
   FILE_CATEGORIES_PATH: `./data/categories.txt`,
   FILE_SENTENCES_PATH: `./data/sentences.txt`,
   FILE_TITLES_PATH: `./data/titles.txt`,
@@ -39,7 +39,7 @@ const OfferType = {
 module.exports = {
   CliCommand,
   DEFAULT_COMMAND,
-  FilePaths,
+  FilePath,
   MocksConfig,
   OfferType,
 };

@@ -10,7 +10,7 @@ const {
 } = require(`../../utils`);
 const {
   CliCommand,
-  FilePaths,
+  FilePath,
   MocksConfig,
   OfferType,
 } = require(`./constants`);
@@ -22,6 +22,12 @@ const {
   PICTURE_INDEX_RESTRICT,
   SUM_RESTRICT,
 } = MocksConfig;
+
+const {
+  FILE_TITLES_PATH,
+  FILE_SENTENCES_PATH,
+  FILE_CATEGORIES_PATH,
+} = FilePath;
 
 class OfferGenerator {
   static getRandomTitle(titles) {
@@ -81,9 +87,9 @@ class OfferGenerator {
 module.exports = {
   name: CliCommand.GENERATE,
   async run(args) {
-    const titles = await OfferGenerator.readContent(FilePaths.FILE_TITLES_PATH);
-    const sentences = await OfferGenerator.readContent(FilePaths.FILE_SENTENCES_PATH);
-    const categories = await OfferGenerator.readContent(FilePaths.FILE_CATEGORIES_PATH);
+    const titles = await OfferGenerator.readContent(FILE_TITLES_PATH);
+    const sentences = await OfferGenerator.readContent(FILE_SENTENCES_PATH);
+    const categories = await OfferGenerator.readContent(FILE_CATEGORIES_PATH);
 
     const [count] = args;
     const countOffer = Number.parseInt(count, 10) || DEFAULT_COUNT;
