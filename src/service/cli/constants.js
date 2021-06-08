@@ -3,15 +3,32 @@
 const CliCommand = {
   GENERATE: `--generate`,
   HELP: `--help`,
+  SERVER: `--server`,
   VERSION: `--version`,
 };
 
+const ContentType = {
+  HTML: `text/html; charset=UTF-8`,
+  PLAIN: `text/plain; charset=UTF-8`,
+};
+
 const DEFAULT_COMMAND = CliCommand.HELP;
+
+const ServerConfig = {
+  PORT: 3000,
+  FILENAME: `mocks.json`,
+  ERROR_MESSAGE: `Not found`,
+};
 
 const FilePath = {
   FILE_CATEGORIES_PATH: `./data/categories.txt`,
   FILE_SENTENCES_PATH: `./data/sentences.txt`,
   FILE_TITLES_PATH: `./data/titles.txt`,
+};
+
+const HttpCode = {
+  OK: 200,
+  NOT_FOUND: 404,
 };
 
 const MocksConfig = {
@@ -38,8 +55,11 @@ const OfferType = {
 
 module.exports = {
   CliCommand,
+  ContentType,
   DEFAULT_COMMAND,
   FilePath,
+  HttpCode,
   MocksConfig,
+  ServerConfig,
   OfferType,
 };
