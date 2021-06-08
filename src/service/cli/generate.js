@@ -10,24 +10,22 @@ const {
 } = require(`../../utils`);
 const {
   CliCommand,
+  FilePaths,
   MocksConfig,
   OfferType,
 } = require(`./constants`);
 
 const {
-  CATEGORIES,
   DEFAULT_COUNT,
   DESCRIPTION_RESTRICT,
   FILE_NAME,
-  TITLES,
   PICTURE_INDEX_RESTRICT,
-  SENTECES,
   SUM_RESTRICT,
 } = MocksConfig;
 
 class OfferGenerator {
-  static getRandomTitle() {
-    return getRandomArrayItem(TITLES);
+  static getRandomTitle(titles) {
+    return getRandomArrayItem(titles);
   }
 
   static getRandomPicture() {
@@ -38,8 +36,8 @@ class OfferGenerator {
     return `item${index}.jpg`;
   }
 
-  static getRandomDescription() {
-    return getRandomArrayItems(SENTECES, DESCRIPTION_RESTRICT.MAX).join(` `);
+  static getRandomDescription(sentences) {
+    return getRandomArrayItems(sentences, DESCRIPTION_RESTRICT.MAX).join(` `);
   }
 
   static getType() {
@@ -50,19 +48,31 @@ class OfferGenerator {
     return getRandomInt(SUM_RESTRICT.MIN, SUM_RESTRICT.MAX);
   }
 
-  static getCategories() {
-    return getRandomArrayItems(CATEGORIES);
+  static getCategories(categories) {
+    return getRandomArrayItems(categories);
   }
 
-  static generateOffer(count) {
+  static async readContent(filePath) {
+    try {
+      const content = await fs.readFile(filePath, `UTF-8`);
+      return content
+        .trim()
+        .split(`\n`);
+    } catch (err) {
+      console.log(chalk.red(err));
+      return [];
+    }
+  }
+
+  static generateOffer(count, titles, sentences, categories) {
     return Array.from(new Array(count), () => {
       return {
-        title: this.getRandomTitle(),
+        title: this.getRandomTitle(titles),
         picture: this.getRandomPicture(),
-        description: this.getRandomDescription(),
+        description: this.getRandomDescription(sentences),
         type: this.getType(),
         sum: this.getRandomSum(),
-        category: this.getCategories(),
+        category: this.getCategories(categories),
       };
     });
   }
@@ -71,9 +81,13 @@ class OfferGenerator {
 module.exports = {
   name: CliCommand.GENERATE,
   async run(args) {
+    const titles = await OfferGenerator.readContent(FilePaths.FILE_TITLES_PATH);
+    const sentences = await OfferGenerator.readContent(FilePaths.FILE_SENTENCES_PATH);
+    const categories = await OfferGenerator.readContent(FilePaths.FILE_CATEGORIES_PATH);
+
     const [count] = args;
     const countOffer = Number.parseInt(count, 10) || DEFAULT_COUNT;
-    const content = JSON.stringify(OfferGenerator.generateOffer(countOffer), null, 2);
+    const content = JSON.stringify(OfferGenerator.generateOffer(countOffer, titles, sentences, categories), null, 2);
 
     try {
       await fs.writeFile(FILE_NAME, content);
