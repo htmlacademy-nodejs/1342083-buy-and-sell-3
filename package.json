@@ -4,7 +4,12 @@
   "description": "Куплю. Продам",
   "main": "./src/service/service.js",
   "scripts": {
-    "start": "node ./src/service/service.js",
+    "prestart": "npm run generate",
+    "start": "npm run server",
+    "generate": "node ./src/service/service.js --generate 100",
+    "server": "nodemon ./src/service/service.js --server",
+    "help": "node ./src/service/service.js --help",
+    "version": "node ./src/service/service.js --version",
     "test": "npm run eslint",
     "eslint": "eslint --ext .js src/"
   },
@@ -20,7 +25,8 @@
   "homepage": "https://github.com/htmlacademy-nodejs/1342083-buy-and-sell-3#readme",
   "devDependencies": {
     "eslint": "7.23.0",
-    "eslint-config-htmlacademy": "0.6.0"
+    "eslint-config-htmlacademy": "0.6.0",
+    "nodemon": "2.0.7"
   },
   "dependencies": {
     "chalk": "4.1.0"
