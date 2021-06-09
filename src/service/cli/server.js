@@ -34,7 +34,7 @@ module.exports = {
       const {url} = req;
 
       switch (url) {
-        case `/`:
+        case `/`: {
           try {
             const fileContent = await fs.readFile(ServerConfig.FILENAME);
             const mocks = JSON.parse(fileContent);
@@ -49,9 +49,11 @@ module.exports = {
             sendResponse(res, HttpCode.NOT_FOUND, ServerConfig.ERROR_MESSAGE);
           }
           break;
-        default:
+        }
+        default: {
           sendResponse(res, HttpCode.NOT_FOUND, ServerConfig.ERROR_MESSAGE);
           break;
+        }
       }
     };
 
