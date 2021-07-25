@@ -1,6 +1,6 @@
 'use strict';
 
-const {RANDOM_SEPARATOR} = require('./constants');
+const {RANDOM_SEPARATOR} = require(`./constants`);
 
 const getRandomInt = (min, max) => {
   min = Math.ceil(min);
