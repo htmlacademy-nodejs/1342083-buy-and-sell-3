@@ -2,8 +2,8 @@
 
 const chalk = require(`chalk`);
 const fs = require(`fs`).promises;
-const http = require(`http`);
-const {CliCommand, ContentType, HttpCode, ServerConfig} = require(`./constants`);
+const express = require(`express`);
+const {CliCommand, HttpCode, ServerConfig} = require(`./constants`);
 
 module.exports = {
   name: CliCommand.SERVER,
@@ -11,60 +11,29 @@ module.exports = {
     const [customPort] = args;
     const port = Number.parseInt(customPort, 10) || ServerConfig.PORT;
 
-    const sendResponse = (response, statusCode, message) => {
-      const template = `
-        <!DOCTYPE html>
-          <html lang="ru">
-          <head>
-            <title>From Node with love!</title>
-          </head>
-          <body>
-            ${message}
-          </body>
-        </html>`.trim();
+    const app = express();
+    app.use(express.json());
 
-      response.writeHead(statusCode, {
-        'Content-Type': ContentType.HTML,
-      });
+    app.get(`/offers`, async (req, res) => {
+      let mocks = null;
 
-      response.end(template);
-    };
-
-    const onClientConnect = async (req, res) => {
-      const {url} = req;
-
-      switch (url) {
-        case `/`: {
-          try {
-            const fileContent = await fs.readFile(ServerConfig.FILENAME);
-            const mocks = JSON.parse(fileContent);
-
-            const markup = `<ul>${mocks
-              .map(({title}) => `<li>${title}</li>`)
-              .join(``)
-            }</ul>`;
-
-            sendResponse(res, HttpCode.OK, markup);
-          } catch (err) {
-            sendResponse(res, HttpCode.NOT_FOUND, ServerConfig.ERROR_MESSAGE);
-          }
-          break;
-        }
-        default: {
-          sendResponse(res, HttpCode.NOT_FOUND, ServerConfig.ERROR_MESSAGE);
-          break;
-        }
+      try {
+        const fileContent = await fs.readFile(ServerConfig.FILENAME);
+        mocks = JSON.parse(fileContent);
+      } catch (err) {
+        mocks = [];
       }
-    };
 
-    const httpServer = http.createServer(onClientConnect);
-    httpServer.listen(port);
-    httpServer
-      .on(`listening`, () => {
-        console.info(chalk.green(`Ожидаю соединений на ${port}`));
-      })
-      .on(`error`, ({message}) => {
-        console.error(chalk.red(`Ошибка при создании сервера: ${message}`));
-      });
+      res.json(mocks);
+    });
+
+    app.use((req, res) => res.status(HttpCode.NOT_FOUND).send(ServerConfig.ERROR_MESSAGE));
+
+    app.listen(port, (err) => {
+      if (err) {
+        return console.error(chalk.red(`Ошибка при создании сервера: ${err.message}`));
+      }
+      return console.info(chalk.green(`Ожидаю соединений на ${port}`));
+    });
   },
 };
