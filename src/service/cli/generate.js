@@ -2,6 +2,7 @@
 
 const fs = require(`fs`).promises;
 const chalk = require(`chalk`);
+const {nanoid} = require(`nanoid`);
 
 const {
   ExitCode,
@@ -40,8 +41,11 @@ const getRandomSum = () => getRandomInt(SUM_RESTRICT.MIN, SUM_RESTRICT.MAX);
 
 const getCategories = (categories) => getRandomArrayItems(categories);
 
+const getRandomId = () => nanoid();
+
 const generateOffer = (count, titles, sentences, categories) => {
   return Array.from(new Array(count), () => ({
+    id: getRandomId(),
     title: getRandomTitle(titles),
     picture: getRandomPicture(),
     description: getRandomDescription(sentences),
