@@ -32,6 +32,7 @@ const getRandomTitle = (titles) => getRandomArrayItem(titles);
 
 const getRandomPicture = () => {
   const index = getRandomInt(PICTURE_INDEX_RESTRICT.MIN, PICTURE_INDEX_RESTRICT.MAX).toString().padStart(2, `0`);
+
   return `item${index}.jpg`;
 };
 
@@ -43,25 +44,28 @@ const getRandomSum = () => getRandomInt(SUM_RESTRICT.MIN, SUM_RESTRICT.MAX);
 
 const getCategories = (categories) => getRandomArrayItems(categories);
 
-const getRandomComments = (comments) => {
-  const size = getRandomInt(MocksConfig.COMMENTS_RESTRICT.MIN, MocksConfig.COMMENTS_RESTRICT.MAX);
-  return Array.from(new Array(size), () => ({
+const generateRandomComments = (count, comments) => {
+  return Array.from(new Array(count), () => ({
     id: getRandomId(),
     text: getRandomText(comments),
   }));
 };
 
 const generateOffer = (count, titles, sentences, categories, comments) => {
-  return Array.from(new Array(count), () => ({
-    id: getRandomId(),
-    title: getRandomTitle(titles),
-    picture: getRandomPicture(),
-    description: getRandomText(sentences),
-    type: getType(),
-    sum: getRandomSum(),
-    category: getCategories(categories),
-    comments: getRandomComments(comments),
-  }));
+  return Array.from(new Array(count), () => {
+    const commentsCount = getRandomInt(MocksConfig.COMMENTS_RESTRICT.MIN, MocksConfig.COMMENTS_RESTRICT.MAX);
+
+    return {
+      id: getRandomId(),
+      title: getRandomTitle(titles),
+      picture: getRandomPicture(),
+      description: getRandomText(sentences),
+      type: getType(),
+      sum: getRandomSum(),
+      category: getCategories(categories),
+      comments: generateRandomComments(commentsCount, comments),
+    };
+  });
 };
 
 const readContent = async (filePath) => {
