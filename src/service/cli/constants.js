@@ -21,9 +21,9 @@ const ServerConfig = {
 };
 
 const FilePath = {
-  FILE_CATEGORIES_PATH: `./data/categories.txt`,
-  FILE_SENTENCES_PATH: `./data/sentences.txt`,
-  FILE_TITLES_PATH: `./data/titles.txt`,
+  CATEGORIES: `./data/categories.txt`,
+  SENTENCES: `./data/sentences.txt`,
+  TITLES: `./data/titles.txt`,
 };
 
 const HttpCode = {

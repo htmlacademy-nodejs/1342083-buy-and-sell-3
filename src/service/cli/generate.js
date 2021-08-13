@@ -24,11 +24,6 @@ const {
   PICTURE_INDEX_RESTRICT,
   SUM_RESTRICT
 } = MocksConfig;
-const {
-  FILE_TITLES_PATH,
-  FILE_SENTENCES_PATH,
-  FILE_CATEGORIES_PATH
-} = FilePath;
 
 const getRandomTitle = (titles) => getRandomArrayItem(titles);
 
@@ -69,9 +64,9 @@ const readContent = async (filePath) => {
 module.exports = {
   name: CliCommand.GENERATE,
   async run(args) {
-    const titles = await readContent(FILE_TITLES_PATH);
-    const sentences = await readContent(FILE_SENTENCES_PATH);
-    const categories = await readContent(FILE_CATEGORIES_PATH);
+    const titles = await readContent(FilePath.TITLES);
+    const sentences = await readContent(FilePath.SENTENCES);
+    const categories = await readContent(FilePath.CATEGORIES);
 
     const [count] = args;
     const countOffer = Number.parseInt(count, 10) || DEFAULT_COUNT;
