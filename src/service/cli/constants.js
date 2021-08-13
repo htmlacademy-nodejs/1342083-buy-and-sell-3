@@ -36,6 +36,7 @@ const HttpCode = {
 const MocksConfig = {
   DEFAULT_COUNT: 1,
   FILE_NAME: `mocks.json`,
+  MAX_ID_LENGTH: 6,
   DESCRIPTION_RESTRICT: {
     MIN: 1,
     MAX: 5,

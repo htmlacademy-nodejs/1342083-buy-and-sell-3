@@ -26,7 +26,7 @@ const {
   SUM_RESTRICT
 } = MocksConfig;
 
-const getRandomId = () => nanoid();
+const getRandomId = () => nanoid(MocksConfig.MAX_ID_LENGTH);
 
 const getRandomTitle = (titles) => getRandomArrayItem(titles);
 
