@@ -1,7 +1,10 @@
 'use strict';
 
 const chalk = require(`chalk`);
-const {CliCommand} = require(`./constants`);
+
+const {
+  CliCommand,
+} = require(`./constants`);
 
 module.exports = {
   name: CliCommand.HELP,
@@ -16,8 +19,7 @@ service.js <command>
 ${CliCommand.VERSION}:            выводит номер версии
 ${CliCommand.HELP}:               печатает этот текст
 ${CliCommand.SERVER}: <port>      запускает сервер на указанном порту (по умолчанию - 3000)
-${CliCommand.GENERATE}: <count>   формирует файл mocks.json
-`;
+${CliCommand.GENERATE}: <count>   формирует файл mocks.json`.trim();
 
     console.info(chalk.gray(text));
   },

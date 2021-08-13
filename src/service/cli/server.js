@@ -3,13 +3,18 @@
 const chalk = require(`chalk`);
 const fs = require(`fs`).promises;
 const express = require(`express`);
-const {CliCommand, HttpCode, ServerConfig} = require(`./constants`);
+
+const {
+  CliCommand,
+  HttpCode,
+  ServerConfig,
+} = require(`./constants`);
 
 module.exports = {
   name: CliCommand.SERVER,
   async run(args) {
-    const [customPort] = args;
-    const port = Number.parseInt(customPort, 10) || ServerConfig.PORT;
+    const [userPort] = args;
+    const port = Number.parseInt(userPort, 10) || ServerConfig.PORT;
 
     const app = express();
     app.use(express.json());
@@ -33,7 +38,8 @@ module.exports = {
       if (err) {
         return console.error(chalk.red(`Ошибка при создании сервера: ${err.message}`));
       }
-      return console.info(chalk.green(`Ожидаю соединений на ${port}`));
+
+      return console.info(chalk.green(`Ожидаю соединений на http://localhost:${port}`));
     });
   },
 };

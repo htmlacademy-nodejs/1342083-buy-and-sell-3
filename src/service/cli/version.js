@@ -1,8 +1,11 @@
 'use strict';
 
 const chalk = require(`chalk`);
+
 const packageJsonFile = require(`../../../package.json`);
-const {CliCommand} = require(`./constants`);
+const {
+  CliCommand,
+} = require(`./constants`);
 
 module.exports = {
   name: CliCommand.VERSION,

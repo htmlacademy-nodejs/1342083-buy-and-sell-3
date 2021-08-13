@@ -1,6 +1,8 @@
 'use strict';
 
-const {RANDOM_SEPARATOR} = require(`./constants`);
+const {
+  RANDOM_SEPARATOR,
+} = require(`./constants`);
 
 const getRandomInt = (min, max) => {
   min = Math.ceil(min);
@@ -8,17 +10,9 @@ const getRandomInt = (min, max) => {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 };
 
-const shuffle = (array) => {
-  return array
-    .slice()
-    .sort(() => Math.random() - RANDOM_SEPARATOR);
-};
+const shuffle = (array) => array.slice().sort(() => Math.random() - RANDOM_SEPARATOR);
 
-const getRandomArrayItem = (array) => {
-  const {length} = array;
-  const randomIndex = getRandomInt(0, length - 1);
-  return array[randomIndex];
-};
+const getRandomArrayItem = (array) => array[getRandomInt(0, array.length - 1)];
 
 const getRandomArrayItems = (array, max = (array.length - 1)) => {
   const count = getRandomInt(1, max);

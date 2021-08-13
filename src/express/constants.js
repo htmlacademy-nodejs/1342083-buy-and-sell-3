@@ -6,4 +6,6 @@ const ServerConfig = {
   TEMPLATES: `templates`,
 };
 
-module.exports = {ServerConfig};
+module.exports = {
+  ServerConfig,
+};
