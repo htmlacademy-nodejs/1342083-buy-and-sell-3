@@ -26,6 +26,8 @@ const {
   SUM_RESTRICT
 } = MocksConfig;
 
+const getRandomId = () => nanoid();
+
 const getRandomTitle = (titles) => getRandomArrayItem(titles);
 
 const getRandomPicture = () => {
@@ -40,8 +42,6 @@ const getType = () => getRandomArrayItem(Object.values(OfferType));
 const getRandomSum = () => getRandomInt(SUM_RESTRICT.MIN, SUM_RESTRICT.MAX);
 
 const getCategories = (categories) => getRandomArrayItems(categories);
-
-const getRandomId = () => nanoid();
 
 const generateOffer = (count, titles, sentences, categories) => {
   return Array.from(new Array(count), () => ({
