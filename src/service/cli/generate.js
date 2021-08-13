@@ -35,7 +35,7 @@ const getRandomPicture = () => {
   return `item${index}.jpg`;
 };
 
-const getRandomDescription = (sentences) => getRandomArrayItems(sentences, DESCRIPTION_RESTRICT.MAX).join(` `);
+const getRandomText = (sentences) => getRandomArrayItems(sentences, DESCRIPTION_RESTRICT.MAX).join(` `);
 
 const getType = () => getRandomArrayItem(Object.values(OfferType));
 
@@ -43,15 +43,24 @@ const getRandomSum = () => getRandomInt(SUM_RESTRICT.MIN, SUM_RESTRICT.MAX);
 
 const getCategories = (categories) => getRandomArrayItems(categories);
 
-const generateOffer = (count, titles, sentences, categories) => {
+const getRandomComments = (comments) => {
+  const size = getRandomInt(MocksConfig.COMMENTS_RESTRICT.MIN, MocksConfig.COMMENTS_RESTRICT.MAX);
+  return Array.from(new Array(size), () => ({
+    id: getRandomId(),
+    text: getRandomText(comments),
+  }));
+};
+
+const generateOffer = (count, titles, sentences, categories, comments) => {
   return Array.from(new Array(count), () => ({
     id: getRandomId(),
     title: getRandomTitle(titles),
     picture: getRandomPicture(),
-    description: getRandomDescription(sentences),
+    description: getRandomText(sentences),
     type: getType(),
     sum: getRandomSum(),
     category: getCategories(categories),
+    comments: getRandomComments(comments),
   }));
 };
 
@@ -71,10 +80,12 @@ module.exports = {
     const titles = await readContent(FilePath.TITLES);
     const sentences = await readContent(FilePath.SENTENCES);
     const categories = await readContent(FilePath.CATEGORIES);
+    const comments = await readContent(FilePath.COMMENTS);
 
     const [count] = args;
     const countOffer = Number.parseInt(count, 10) || DEFAULT_COUNT;
-    const content = JSON.stringify(generateOffer(countOffer, titles, sentences, categories), null, 2);
+    const mocks = generateOffer(countOffer, titles, sentences, categories, comments);
+    const content = JSON.stringify(mocks, null, 2);
 
     try {
       await fs.writeFile(FILE_NAME, content);

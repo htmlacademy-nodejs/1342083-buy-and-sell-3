@@ -22,6 +22,7 @@ const ServerConfig = {
 
 const FilePath = {
   CATEGORIES: `./data/categories.txt`,
+  COMMENTS: `./data/comments.txt`,
   SENTENCES: `./data/sentences.txt`,
   TITLES: `./data/titles.txt`,
 };
@@ -46,6 +47,10 @@ const MocksConfig = {
   SUM_RESTRICT: {
     MIN: 1000,
     MAX: 100000,
+  },
+  COMMENTS_RESTRICT: {
+    MIN: 0,
+    MAX: 5,
   },
 };
 
