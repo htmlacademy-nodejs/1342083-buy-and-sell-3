@@ -1,15 +1,9 @@
 'use strict';
 
-const chalk = require(`chalk`);
+const {CliCommand} = require(`../../constants`);
+const {showHelpMessage} = require(`../../utils`);
 
-const {
-  CliCommand,
-} = require(`./constants`);
-
-module.exports = {
-  name: CliCommand.HELP,
-  run() {
-    const text = `
+const text = `
 Программа запускает http-сервер и формирует файл с данными для API.
 
 Гайд:
@@ -21,6 +15,9 @@ ${CliCommand.HELP}:               печатает этот текст
 ${CliCommand.SERVER}: <port>      запускает сервер на указанном порту (по умолчанию - 3000)
 ${CliCommand.GENERATE}: <count>   формирует файл mocks.json`.trim();
 
-    console.info(chalk.gray(text));
+module.exports = {
+  name: CliCommand.HELP,
+  run() {
+    showHelpMessage(text);
   },
 };

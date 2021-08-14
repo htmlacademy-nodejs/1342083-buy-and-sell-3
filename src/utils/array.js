@@ -1,14 +1,7 @@
 'use strict';
 
-const {
-  RANDOM_SEPARATOR,
-} = require(`./constants`);
-
-const getRandomInt = (min, max) => {
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-};
+const {getRandomInt} = require(`./common`);
+const {RANDOM_SEPARATOR} = require(`../constants`);
 
 const shuffle = (array) => array.slice().sort(() => Math.random() - RANDOM_SEPARATOR);
 
@@ -20,7 +13,6 @@ const getRandomArrayItems = (array, max = (array.length - 1)) => {
 };
 
 module.exports = {
-  getRandomInt,
   shuffle,
   getRandomArrayItem,
   getRandomArrayItems,
