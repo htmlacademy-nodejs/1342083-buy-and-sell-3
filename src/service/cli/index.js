@@ -12,6 +12,4 @@ const Cli = {
   [version.name]: version,
 };
 
-module.exports = {
-  Cli,
-};
+module.exports = Cli;

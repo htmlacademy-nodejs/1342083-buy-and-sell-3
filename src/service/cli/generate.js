@@ -1,106 +1,117 @@
 'use strict';
 
 const fs = require(`fs`).promises;
-const chalk = require(`chalk`);
-const {ExitCode} = require(`../../constants`);
+const {CliCommand, ExitCode, FilePath} = require(`../../constants`);
 const {
+  getRandomId,
   getRandomInt,
   getRandomArrayItem,
   getRandomArrayItems,
+  showErrorMessage,
+  showSuccessMessage,
 } = require(`../../utils`);
-const {
-  CliCommand,
-  FilePath,
-  MocksConfig,
-  OfferType,
-} = require(`./constants`);
 
-const {
-  DEFAULT_COUNT,
-  DESCRIPTION_RESTRICT,
-  FILE_NAME,
-  PICTURE_INDEX_RESTRICT,
-  SUM_RESTRICT,
-} = MocksConfig;
+const CommentsRestict = {
+  MIN: 0,
+  MAX: 5,
+};
 
-const {
-  FILE_TITLES_PATH,
-  FILE_SENTENCES_PATH,
-  FILE_CATEGORIES_PATH,
-} = FilePath;
+const DEFAULT_MOCKS_COUNT = 1;
 
-class OfferGenerator {
-  static getRandomTitle(titles) {
-    return getRandomArrayItem(titles);
+const DescriptionRestrict = {
+  MIN: 1,
+  MAX: 5,
+};
+
+const OfferType = {
+  OFFER: `offer`,
+  SALE: `sale`,
+};
+
+const PictureIndexRestrict = {
+  MIN: 1,
+  MAX: 16,
+};
+
+const SaveMessage = {
+  ERROR: `Не могу записать данные в файл...`,
+  SUCCESS: `Операция успешна. Файл создан.`,
+};
+
+const SumRestrict = {
+  MIN: 1000,
+  MAX: 100000,
+};
+
+const getRandomTitle = (titles) => getRandomArrayItem(titles);
+
+const getRandomPicture = () => {
+  const index =
+    getRandomInt(PictureIndexRestrict.MIN, PictureIndexRestrict.MAX).toString().padStart(2, `0`);
+  return `item${index}.jpg`;
+};
+
+const getRandomText = (sentences) => getRandomArrayItems(sentences, DescriptionRestrict.MAX).join(` `);
+
+const getType = () => getRandomArrayItem(Object.values(OfferType));
+
+const getRandomSum = () => getRandomInt(SumRestrict.MIN, SumRestrict.MAX);
+
+const getCategories = (categories) => getRandomArrayItems(categories);
+
+const generateRandomComments = (count, comments) => {
+  return Array.from(new Array(count), () => ({
+    id: getRandomId(),
+    text: getRandomText(comments),
+  }));
+};
+
+const generateOffer = (count, titles, sentences, categories, comments) => {
+  return Array.from(new Array(count), () => {
+    const commentsCount = getRandomInt(CommentsRestict.MIN, CommentsRestict.MAX);
+
+    return {
+      id: getRandomId(),
+      title: getRandomTitle(titles),
+      picture: getRandomPicture(),
+      description: getRandomText(sentences),
+      type: getType(),
+      sum: getRandomSum(),
+      category: getCategories(categories),
+      comments: generateRandomComments(commentsCount, comments),
+    };
+  });
+};
+
+const readContent = async (filePath) => {
+  try {
+    const content = await fs.readFile(filePath, `UTF-8`);
+    return content.trim().split(`\n`);
+  } catch (err) {
+    showErrorMessage(err);
+    return [];
   }
-
-  static getRandomPicture() {
-    const index = getRandomInt(PICTURE_INDEX_RESTRICT.MIN, PICTURE_INDEX_RESTRICT.MAX)
-      .toString()
-      .padStart(2, `0`);
-
-    return `item${index}.jpg`;
-  }
-
-  static getRandomDescription(sentences) {
-    return getRandomArrayItems(sentences, DESCRIPTION_RESTRICT.MAX).join(` `);
-  }
-
-  static getType() {
-    return getRandomArrayItem(Object.values(OfferType));
-  }
-
-  static getRandomSum() {
-    return getRandomInt(SUM_RESTRICT.MIN, SUM_RESTRICT.MAX);
-  }
-
-  static getCategories(categories) {
-    return getRandomArrayItems(categories);
-  }
-
-  static async readContent(filePath) {
-    try {
-      const content = await fs.readFile(filePath, `UTF-8`);
-      return content
-        .trim()
-        .split(`\n`);
-    } catch (err) {
-      console.log(chalk.red(err));
-      return [];
-    }
-  }
-
-  static generateOffer(count, titles, sentences, categories) {
-    return Array.from(new Array(count), () => {
-      return {
-        title: this.getRandomTitle(titles),
-        picture: this.getRandomPicture(),
-        description: this.getRandomDescription(sentences),
-        type: this.getType(),
-        sum: this.getRandomSum(),
-        category: this.getCategories(categories),
-      };
-    });
-  }
-}
+};
 
 module.exports = {
   name: CliCommand.GENERATE,
   async run(args) {
-    const titles = await OfferGenerator.readContent(FILE_TITLES_PATH);
-    const sentences = await OfferGenerator.readContent(FILE_SENTENCES_PATH);
-    const categories = await OfferGenerator.readContent(FILE_CATEGORIES_PATH);
+    const titles = await readContent(FilePath.TITLES);
+    const sentences = await readContent(FilePath.SENTENCES);
+    const categories = await readContent(FilePath.CATEGORIES);
+    const comments = await readContent(FilePath.COMMENTS);
 
     const [count] = args;
-    const countOffer = Number.parseInt(count, 10) || DEFAULT_COUNT;
-    const content = JSON.stringify(OfferGenerator.generateOffer(countOffer, titles, sentences, categories), null, 2);
+    const countOffer = Number.parseInt(count, 10) || DEFAULT_MOCKS_COUNT;
+    const mocks = generateOffer(countOffer, titles, sentences, categories, comments);
+    const content = JSON.stringify(mocks, null, 2);
 
     try {
-      await fs.writeFile(FILE_NAME, content);
-      console.info(chalk.green(`Операция успешна. Файл создан.`));
+      await fs.writeFile(FilePath.MOCKS, content);
+      showSuccessMessage(SaveMessage.SUCCESS);
       process.exit(ExitCode.SUCCESS);
     } catch (err) {
-      console.error(chalk.red(`Не могу записать данные в файл...`));
+      showErrorMessage(SaveMessage.ERROR);
       process.exit(ExitCode.ERROR);
     }
   },
