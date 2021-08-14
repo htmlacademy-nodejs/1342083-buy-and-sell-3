@@ -1,0 +1,130 @@
+# /api/offers
+
+# возвращает список объявлений
+### 200
+GET http://localhost:3000/api/offers HTTP/1.1
+
+# создаёт новое объявление
+### 400
+POST http://localhost:3000/api/offers HTTP/1.1
+### 200 (рандомный id)
+POST http://localhost:3000/api/offers HTTP/1.1
+Content-Type: application/json
+
+{
+  "title": "Продам югославский фурнитур.",
+  "picture": "item1.jpg",
+  "description": "Не пытайтесь торговаться. Цену вещам я знаю. Это настоящая находка для коллекционера!",
+  "type": "offer",
+  "sum": 9000,
+  "category": ["Разное"]
+}
+### 200 (фиксированный id)
+POST http://localhost:3000/api/offers HTTP/1.1
+Content-Type: application/json
+
+{
+  "id": "whatislove",
+  "title": "Продам НЕюгославский фурнитур.",
+  "picture": "item2.jpg",
+  "description": "Продаю в связи с переездом. Отрываю от сердца.",
+  "type": "offer",
+  "sum": 12000,
+  "category": ["Разное"]
+}
+
+# возвращает полную информацию определённого объявления
+### 404
+GET http://localhost:3000/api/offers/not_found HTTP/1.1
+### 200
+GET http://localhost:3000/api/offers/whatislove HTTP/1.1
+
+# редактирует определённое объявление
+### 400
+PUT http://localhost:3000/api/offers/whatislove HTTP/1.1
+### 400
+PUT http://localhost:3000/api/offers/whatislove HTTP/1.1
+Content-Type: application/json
+
+{
+  "error": 42
+}
+### 200
+PUT http://localhost:3000/api/offers/whatislove HTTP/1.1
+Content-Type: application/json
+
+{
+  "title": "Продам необычный фурнитур.",
+  "picture": "item2.jpg",
+  "description": "Товар в отличном состоянии.",
+  "type": "offer",
+  "sum": 10000,
+  "category": ["Разное"]
+}
+
+# создаёт новый комментарий
+### 400
+POST http://localhost:3000/api/offers/whatislove/comments HTTP/1.1
+### 400
+POST http://localhost:3000/api/offers/whatislove/comments HTTP/1.1
+Content-Type: application/json
+
+{
+  "message": "А мне никогда не опубликуют, потому что я - неправильный."
+}
+### 200
+POST http://localhost:3000/api/offers/whatislove/comments HTTP/1.1
+Content-Type: application/json
+
+{
+  "text": "Вы что?! В магазине дешевле."
+}
+### 200
+POST http://localhost:3000/api/offers/whatislove/comments HTTP/1.1
+Content-Type: application/json
+
+{
+  "id": "some_comment",
+  "text": "Почему в таком ужасном состоянии?"
+}
+
+### удаляет из определённой публикации комментарий с идентификатором
+DELETE http://localhost:3000/api/offers/whatislove/comments/some_comment HTTP/1.1
+
+# возвращает список комментариев определённого объявления
+### 200
+GET http://localhost:3000/api/offers/whatislove/comments HTTP/1.1
+
+# удаляет определённое объявление
+### 404
+DELETE http://localhost:3000/api/offers/not_found HTTP/1.1
+### 200
+DELETE http://localhost:3000/api/offers/whatislove HTTP/1.1
+
+
+
+# /api/search
+
+# Возвращает результаты поиска. Поиск объявлений выполняется по наименованию. Объявление соответствует поиску в случае наличия хотя бы одного вхождения искомой фразы
+### 200
+GET http://localhost:3000/api/search?query=Кинг HTTP/1.1
+### 400
+GET http://localhost:3000/api/search?query= HTTP/1.1
+### 404
+GET http://localhost:3000/api/search?query=машина%20времени HTTP/1.1
+
+
+
+# /api/categories
+
+# возвращает список категорий
+### 200
+GET http://localhost:3000/api/categories
+
+
+
+# /api/comments
+
+# возвращает список комментариев
+### 200
+GET http://localhost:3000/api/comments HTTP/1.1
