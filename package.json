@@ -5,7 +5,8 @@
   "main": "./src/service/service.js",
   "scripts": {
     "eslint": "eslint --ext .js src/",
-    "test": "npm run eslint",
+    "test": "npm run eslint && npm run jest",
+    "jest": "jest",
     "generate": "node ./src/service/service.js --generate 100",
     "help": "node ./src/service/service.js --help",
     "version": "node ./src/service/service.js --version",
@@ -29,8 +30,10 @@
   "devDependencies": {
     "eslint": "7.23.0",
     "eslint-config-htmlacademy": "0.6.0",
+    "jest": "27.1.1",
     "nodemon": "2.0.7",
-    "pug-lint": "2.6.0"
+    "pug-lint": "2.6.0",
+    "supertest": "6.1.6"
   },
   "dependencies": {
     "chalk": "4.1.0",
