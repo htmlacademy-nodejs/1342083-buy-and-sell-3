@@ -9,7 +9,7 @@ module.exports = (api, service) => {
   api.use(`/search`, route);
 
   route.get(`/`, async (req, res) => {
-    const {query = `a`} = req.query;
+    const {query} = req.query;
 
     if (!query) {
       return res.status(HttpCode.BAD_REQUEST).json([]);
