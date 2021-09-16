@@ -6,7 +6,7 @@ const {HttpCode} = require(`../../constants`);
 const route = new Router();
 
 module.exports = (api, service) => {
-  api.use(`/categories`, route);
+  api.use(`/category`, route);
 
   route.get(`/`, async (req, res) => {
     const categories = await service.findAll();
