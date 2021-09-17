@@ -19,9 +19,21 @@ module.exports = (api, offerService, commentService) => {
     res.status(HttpCode.OK).json(offer);
   });
 
+  route.get(`/:offerId/comments`, offerExists(offerService), (req, res) => {
+    const {offer} = res.locals;
+    const comments = commentService.findOne(offer);
+    res.status(HttpCode.OK).json(comments);
+  });
+
   route.post(`/`, offerValidator, (req, res) => {
     const offer = offerService.create(req.body);
     res.status(HttpCode.CREATED).json(offer);
+  });
+
+  route.post(`/:offerId/comments`, [offerExists(offerService), commentValidator], (req, res) => {
+    const {offer} = res.locals;
+    const newComment = commentService.create(offer, req.body);
+    return res.status(HttpCode.OK).json(newComment);
   });
 
   route.put(`/:offerId`, [offerExists(offerService), offerValidator], (req, res) => {
@@ -36,12 +48,6 @@ module.exports = (api, offerService, commentService) => {
     res.status(HttpCode.OK).json(deletedOffer);
   });
 
-  route.get(`/:offerId/comments`, offerExists(offerService), (req, res) => {
-    const {offer} = res.locals;
-    const comments = commentService.findOne(offer);
-    res.status(HttpCode.OK).json(comments);
-  });
-
   route.delete(`/:offerId/comments/:commentId`, offerExists(offerService), (req, res) => {
     const {offer} = res.locals;
     const {commentId} = req.params;
@@ -52,11 +58,5 @@ module.exports = (api, offerService, commentService) => {
     }
 
     return res.status(HttpCode.OK).json(droppedComment);
-  });
-
-  route.post(`/:offerId/comments`, [offerExists(offerService), commentValidator], (req, res) => {
-    const {offer} = res.locals;
-    const newComment = commentService.create(offer, req.body);
-    return res.status(HttpCode.OK).json(newComment);
   });
 };
